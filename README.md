@@ -44,7 +44,7 @@ The provided code focuses on the functionality of the extension, and additional 
 6. To delete a note, click the "Delete" button next to the note.
 7. Use the search input field to filter notes based on title, content, or tags.
 
-## Roadmap Of Upcoming Features
+## Roadmap
 
 1. Enhanced Note Editing:
 Implement functionality to overwrite the original note with new information when editing a note. This ensures that the changes made to a note are saved within the existing note rather than creating a new note each time.
