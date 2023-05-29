@@ -1,2 +1,65 @@
-# quick-note-extension
+# QUICK NOTE BROWSER EXTENSION
+
 A browser extension for quick note-taking while browsing the web.
+
+## Features
+
+Note Creation and Editing: The extension allows users to create and edit   notes. Users can enter a title, content, and tags for each note.
+
+Note Saving: Users can save their notes by clicking the "Save Note"   button. The notes are stored locally using Chrome's storage API.
+
+Note Display: Saved notes are displayed in a list format. Each note is shown with its title, content (hidden by default), and tags. Clicking on a note expands or collapses its content.
+
+Note Sorting: The extension sorts the notes based on their timestamp in descending order. The most recently created or edited notes appear at the top.
+
+Note Deletion: Users can delete a note by clicking the "Delete" button next to the respective note. The note is removed from the storage and the list of displayed notes is updated.
+
+Note Searching: The extension provides a search input field where users can enter a search query. The notes are filtered based on the query, matching against the note title, content, or tags.
+
+Window Width Preservation: The extension remembers the width of the extension window using Chrome's storage API. This allows the window to retain its width across browser sessions.
+
+NOTE: 
+The provided code focuses on the functionality of the extension, and additional features such as syncing across devices, data backup, or sharing options are not included.
+
+## Screenshots
+
+Coming Soon.
+
+## Installation
+
+1. Clone the repository or download the source code.
+2. Open Google Chrome or any Chromium-based browser.
+3. Go to `chrome://extensions`.
+4. Enable the "Developer mode" toggle switch.
+5. Click on "Load unpacked" button and select the folder containing the extension source code.
+6. The extension should now be installed and ready to use.
+
+## Usage
+
+1. Launch the extension by clicking on its icon in the browser toolbar.
+2. Enter the note details (title, content, tags) in the provided fields.
+3. Click the "Save Note" button to save the note.
+4. Click the "Clear Note" button to clear the current note.
+5. To edit a note, click the "Edit" button next to the note.
+6. To delete a note, click the "Delete" button next to the note.
+7. Use the search input field to filter notes based on title, content, or tags.
+
+## Development
+
+To further develop and customize the extension:
+
+1. Fork the repository and clone it to your local machine.
+2. Make changes to the source code using your preferred code editor.
+3. Test the changes by loading the unpacked extension in your browser (follow the installation instructions above).
+4. If everything looks good, commit your changes and push them to your forked repository.
+5. Create a pull request to the original repository.
+
+## Contributing
+
+Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [License Name] - see the [LICENSE](LICENSE) file for details.
+
+(Coming Soon)
