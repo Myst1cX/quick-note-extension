@@ -1,8 +1,8 @@
 # QUICK NOTE 
 
-A browser extension for quick note-taking while browsing the web.
-
 ![icon128](https://github.com/Myst1cX/quick-note-extension/assets/97919309/ee233a18-fd2c-4fd5-bebb-69ecbf020425)
+
+A browser extension for quick note-taking while browsing the web.
 
 Please note that this extension is currently being tested and developed solely on the Edge browser. 
 While it should natively work with other Chromium-based browsers, support for other browsers is postponed to the indefinite future. 
