@@ -49,6 +49,8 @@ The provided code focuses on the functionality of the extension, and additional 
 1. Enhanced Note Editing:
 Implement functionality to overwrite the original note with new information when editing a note. This ensures that the changes made to a note are saved within the existing note rather than creating a new note each time.
 Update the editing feature to provide a seamless and efficient user experience when modifying note content.
+Introduce a dedicated note text editor with essential formatting options such as bold, italics, bullet points, and numbered lists.
+Enable users to customize the appearance of their notes by incorporating basic text styling capabilities.
 
 2. Persistent Input Fields:
 Enhance the extension's behavior by preserving the entered text in note title, note content, note tags, and the search notes tab when the user clicks outside the extension window.
