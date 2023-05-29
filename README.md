@@ -2,6 +2,9 @@
 
 A browser extension for quick note-taking while browsing the web.
 
+Please note that this extension is currently being tested and developed solely on the Edge browser. 
+While it should natively work with other Chromium-based browsers, support for other browsers is postponed to the indefinite future. 
+
 ## Features
 
 Note Creation and Editing: The extension allows users to create and edit   notes. Users can enter a title, content, and tags for each note.
