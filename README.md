@@ -44,6 +44,35 @@ The provided code focuses on the functionality of the extension, and additional 
 6. To delete a note, click the "Delete" button next to the note.
 7. Use the search input field to filter notes based on title, content, or tags.
 
+## Roadmap Of Upcoming Features
+
+1. Enhanced Note Editing:
+Implement functionality to overwrite the original note with new information when editing a note. This ensures that the changes made to a note are saved within the existing note rather than creating a new note each time.
+Update the editing feature to provide a seamless and efficient user experience when modifying note content.
+
+2. Persistent Input Fields:
+Enhance the extension's behavior by preserving the entered text in note title, note content, note tags, and the search notes tab when the user clicks outside the extension window.
+Ensure that the entered text is retained even if the user switches focus to another application or performs other tasks, allowing for a more convenient and uninterrupted note-taking experience.
+
+3. Improved Note Formatting:
+Implement a feature to display line breaks (full line spaces) between sentences in the note content.
+Enable proper rendering of line breaks to enhance readability and maintain the original formatting of the saved note.
+
+4. Dark Mode Toggle:
+Introduce a dark mode toggle option, including the ability to select system default or AMOLED mode.
+Enhance the visual experience of the extension by providing users with a choice of different themes to suit their preferences and reduce eye strain.
+
+5. Pinning Notes:
+Implement the ability for users to pin specific notes for quick access and easy organization.
+Enable users to mark important or frequently used notes as pinned, ensuring they are prominently displayed for convenient reference.
+
+6. Trash Can and Note Restoration:
+Introduce a trash can feature where deleted notes can be stored temporarily.
+Provide users with the ability to restore deleted notes from the trash can, minimizing the risk of accidental data loss.
+
+7. Credits Menu:
+Include a dedicated menu section to acknowledge and credit the developer of the extension and possible future contributors.
+
 ## Development
 
 To further develop and customize the extension:
