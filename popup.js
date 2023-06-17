@@ -4,113 +4,71 @@ document.addEventListener('DOMContentLoaded', function () {
   const noteTags = document.getElementById('note-tags');
   const saveButton = document.getElementById('save-button');
   const clearButton = document.getElementById('clear-button');
+
+  let isEditing = false; // Flag to track whether a note is being edited
+  let editedNoteIndex = -1; // Index of the note being edited
+
+  // Load the note data
+  chrome.storage.local.get(['notes'], function (result) {
+    const notes = result.notes || [];
+    renderNotes(notes);
+  });
+
+// Render the notes
+function renderNotes(notes) {
   const noteList = document.getElementById('note-list');
-  const searchInput = document.getElementById('search-input');
-
-  let editIndex = -1;
-
-  // Retrieve the saved window width from storage
-  chrome.storage.local.get(['windowWidth'], function (result) {
-    const windowWidth = result.windowWidth;
-    if (windowWidth) {
-      // Apply the saved width to the extension window
-      document.documentElement.style.width = windowWidth + 'px';
-    }
-  });
-
-  // Handle the click event of the "Save Note" button
-  saveButton.addEventListener('click', function () {
-    const title = noteTitle.value.trim();
-    const content = noteContent.value.trim();
-    const tags = noteTags.value.trim().split(',');
-
-    if (title && content) {
-      chrome.storage.local.get(['notes'], function (result) {
-        const notes = result.notes || [];
-
-        const note = {
-          title: title,
-          content: content,
-          tags: tags,
-          timestamp: new Date().getTime(),
-        };
-
-        if (editIndex >= 0) {
-          // Edit existing note
-          notes[editIndex] = note;
-          editIndex = -1;
-        } else {
-          // Add new note
-          notes.push(note);
-        }
-
-        chrome.storage.local.set({ notes: notes }, function () {
-          renderNotes(notes);
-          noteTitle.value = '';
-          noteContent.value = '';
-          noteTags.value = '';
-        });
-      });
-    }
-  });
-
-// Handle the click event of the "Clear Note" button
-clearButton.addEventListener('click', function () {
-  noteTitle.value = '';
-  noteContent.value = '';
-  noteTags.value = '';
-});
-
-  function renderNotes(notes) {
   noteList.innerHTML = '';
 
   if (notes.length === 0) {
-    noteList.innerHTML = '<li>No notes available</li>';
+    const noNotesMessage = document.createElement('p');
+    noNotesMessage.textContent = 'No notes available';
+    noteList.appendChild(noNotesMessage);
   } else {
-    notes.sort((a, b) => b.timestamp - a.timestamp);
-
     for (let i = 0; i < notes.length; i++) {
       const note = notes[i];
+
       const listItem = document.createElement('li');
-      listItem.classList.add(
-        'border',
-        'border-gray-300',
-        'p-4',
-        'mb-4',
-        'flex',
-        'flex-col',
-        'rounded-lg'
-      );
+      listItem.classList.add('note-item');
 
       const noteTitle = document.createElement('span');
       noteTitle.classList.add('font-bold', 'mr-2');
       noteTitle.textContent = note.title;
       listItem.appendChild(noteTitle);
 
+      const noteContentWrapper = document.createElement('div');
+      noteContentWrapper.classList.add('note-content-wrapper');
+      listItem.appendChild(noteContentWrapper);
+
       const noteContent = document.createElement('span');
       noteContent.classList.add('text-gray-600');
       noteContent.textContent = note.content;
       noteContent.style.display = 'none';
-      listItem.appendChild(noteContent);
+      noteContentWrapper.appendChild(noteContent);
 
-      const noteTags = document.createElement('div');
-      noteTags.classList.add('flex', 'flex-wrap', 'mb-2');
-      listItem.appendChild(noteTags);
+      if (note.tags.length > 0) {
+        const noteTags = document.createElement('div');
+        noteTags.classList.add('flex', 'flex-wrap', 'mb-2');
+        listItem.appendChild(noteTags);
 
-      for (let j = 0; j < note.tags.length; j++) {
-        const tag = note.tags[j];
-        const tagSpan = document.createElement('span');
-        tagSpan.classList.add(
-          'bg-blue-200',
-          'text-blue-800',
-          'px-2',
-          'py-1',
-          'rounded',
-          'mr-1',
-          'mb-1'
-        );
-        tagSpan.textContent = tag;
-        noteTags.appendChild(tagSpan);
+        for (let j = 0; j < note.tags.length; j++) {
+          const tag = note.tags[j];
+          const tagSpan = document.createElement('span');
+          tagSpan.classList.add(
+            'bg-blue-200',
+            'text-blue-800',
+            'px-2',
+            'py-1',
+            'rounded',
+            'mr-1',
+            'mb-1'
+          );
+          tagSpan.textContent = tag;
+          noteTags.appendChild(tagSpan);
+        }
+      } else {
+        const noteTags = document.createElement('div');
+        noteTags.classList.add('mb-2');
+        listItem.appendChild(noteTags);
       }
 
       // Handle the click event to toggle note content display
@@ -129,7 +87,7 @@ clearButton.addEventListener('click', function () {
       );
       editButton.textContent = 'Edit';
       editButton.addEventListener('click', function () {
-        editNote(note);
+        editNoteForm(note, i);
       });
       listItem.appendChild(editButton);
 
@@ -144,9 +102,8 @@ clearButton.addEventListener('click', function () {
       );
       deleteButton.textContent = 'Delete';
       deleteButton.addEventListener('click', function () {
-  deleteNote(note);
-});
-
+        deleteNoteForm(i);
+      });
       listItem.appendChild(deleteButton);
 
       noteList.appendChild(listItem);
@@ -156,78 +113,99 @@ clearButton.addEventListener('click', function () {
 
 
   function toggleNoteContent(listItem) {
-  const noteContent = listItem.querySelector('span:not(.font-bold)');
+    const noteContent = listItem.querySelector('span:not(.font-bold)');
 
-  if (noteContent) {
-    if (!isTextSelected()) {
-      if (noteContent.style.display === 'none') {
-        noteContent.style.display = 'block';
-      } else {
-        noteContent.style.display = 'none';
+    if (noteContent) {
+      if (!isTextSelected()) {
+        if (noteContent.style.display === 'none') {
+          noteContent.style.display = 'inline';
+        } else {
+          noteContent.style.display = 'none';
+        }
       }
     }
   }
-}
-
-
-
-   function editNote(note) {
-    noteTitle.value = note.title;
-    noteContent.value = note.content;
-    noteTags.value = note.tags.join(',');
-  }
-
-
-  function deleteNote(note) {
-  chrome.storage.local.get(['notes'], function (result) {
-    const notes = result.notes || [];
-
-    const index = notes.findIndex((n) => n.timestamp === note.timestamp);
-
-    if (index >= 0) {
-      notes.splice(index, 1);
-
-      chrome.storage.local.set({ notes: notes }, function () {
-        renderNotes(notes);
-      });
-    }
-  });
-}
-
-
-  // Handle window resize event
-  window.addEventListener('resize', function () {
-    // Save the current window width to storage
-    const windowWidth = document.documentElement.offsetWidth;
-    chrome.storage.local.set({ windowWidth: windowWidth });
-  });
 
   function isTextSelected() {
-    const selection = window.getSelection();
-    return selection && selection.toString().length > 0;
+    const selectedText = window.getSelection().toString();
+    return selectedText.length > 0;
   }
 
-  // Handle search input change event
-  searchInput.addEventListener('input', function (event) {
-    const searchQuery = event.target.value.toLowerCase();
+  saveButton.addEventListener('click', function () {
+    const title = noteTitle.value.trim();
+    const content = noteContent.value.trim();
+    const tags = noteTags.value.trim().split(',');
+
+    if (!title && !content && !tags.length) {
+      return;
+    }
+
     chrome.storage.local.get(['notes'], function (result) {
       const notes = result.notes || [];
-      const filteredNotes = notes.filter(function (note) {
-        // Check if the search query matches the note title, content, or tags
-        return (
-          note.title.toLowerCase().includes(searchQuery) ||
-          note.content.toLowerCase().includes(searchQuery) ||
-          note.tags.some(function (tag) {
-            return tag.toLowerCase().includes(searchQuery);
-          })
-        );
+
+      if (isEditing && editedNoteIndex >= 0) {
+        // If in editing mode, update the existing note
+        if (editedNoteIndex < notes.length) {
+          const editedNote = {
+            title: title,
+            content: content,
+            tags: tags,
+          };
+          notes[editedNoteIndex] = editedNote;
+        }
+        isEditing = false;
+        editedNoteIndex = -1;
+      } else {
+        // Otherwise, create a new note
+        const newNote = {
+          title: title,
+          content: content,
+          tags: tags,
+        };
+        notes.push(newNote);
+      }
+
+      // Save the updated notes
+      chrome.storage.local.set({ notes: notes }, function () {
+        // Clear the note form
+        noteTitle.value = '';
+        noteContent.value = '';
+        noteTags.value = '';
+
+        // Render the updated notes
+        renderNotes(notes);
       });
-      renderNotes(filteredNotes);
     });
   });
 
-  chrome.storage.local.get(['notes'], function (result) {
-    const notes = result.notes || [];
-    renderNotes(notes);
+  clearButton.addEventListener('click', function () {
+    noteTitle.value = '';
+    noteContent.value = '';
+    noteTags.value = '';
   });
+
+  function editNoteForm(note, index) {
+    noteTitle.value = note.title;
+    noteContent.value = note.content;
+    noteTags.value = note.tags.join(',');
+
+    isEditing = true;
+    editedNoteIndex = index;
+  }
+
+  function deleteNoteForm(index) {
+    chrome.storage.local.get(['notes'], function (result) {
+      const notes = result.notes || [];
+
+      if (index >= 0 && index < notes.length) {
+        notes.splice(index, 1);
+      }
+
+      // Save the updated notes
+      chrome.storage.local.set({ notes: notes }, function () {
+        // Render the updated notes
+        renderNotes(notes);
+      });
+    });
+  }
 });
